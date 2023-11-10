@@ -1,3 +1,9 @@
 name: Uranium
 version: '${project.version}'
 main: me.nuclearteam.uranium.Uranium
+authors: [ "CatDev", "1mag1n33Dev" ]
+permissions:
+  - uranium.moderation.ban
+  - uranium.moderation.kick
+commands:
+  - ban
