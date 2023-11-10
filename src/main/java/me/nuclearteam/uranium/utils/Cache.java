@@ -54,21 +54,24 @@ public class Cache {
         }
     }
 
+    public File getPlayersFile() {
+        return playersFile;
+    }
+
     public void SaveCache() {
-        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
-                () -> {
-                    try (Writer writer = new FileWriter(this.playersFile)) {
-                        prettyGson.toJson(this.uranium235.cachedPlayers);
-                        System.out.println("meowoeoowqoweooweeo");
-                        this.uranium235.getLogger().info(this.uranium235.cachedPlayers.toString());
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+//        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
+//                () -> {
+                        System.out.println("no... That would be YOUR MOTHER!");
+                    try (Writer writer = new FileWriter(playersFile)) {
+                        this.uranium235.getLogger().info("bruh: " + gson.toJson(this.uranium235.cachedPlayers.toArray()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                });
+//                });
         this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
                 () -> {
                     try (Writer writer = new FileWriter(this.bannedPlayersFile)) {
-                        prettyGson.toJson(this.uranium235.bannedPlayers);
+                        prettyGson.toJson(this.uranium235.bannedPlayers.toArray(), writer);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -76,7 +79,7 @@ public class Cache {
         this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
                 () -> {
                     try (Writer writer = new FileWriter(this.bannedIpsFile)) {
-                        prettyGson.toJson(this.uranium235.bannedIps);
+                        prettyGson.toJson(this.uranium235.bannedIps.toArray(), writer);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }

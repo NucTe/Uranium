@@ -1,5 +1,7 @@
 package me.nuclearteam.uranium.listeners;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.nuclearteam.uranium.Uranium;
 import me.nuclearteam.uranium.models.CachePlayer;
 import me.nuclearteam.uranium.utils.DateUtils;
@@ -8,6 +10,9 @@ import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.InetSocketAddress;
 import java.util.UUID;
 
@@ -18,6 +23,9 @@ public class UserListener implements Listener {
     public UserListener(Uranium uranium) {
         this.uranium = uranium;
     }
+
+    Gson gson = new Gson();
+    Gson prettyGson = new GsonBuilder().create();
 
     @EventHandler
     public void OnJoin(LoginEvent event) {
@@ -42,6 +50,14 @@ public class UserListener implements Listener {
             this.uranium.cachedPlayers.add(new CachePlayer(name, uuid, DateUtils.monthLater()));
         }
 
+        this.uranium.getProxy().getScheduler().runAsync(this.uranium,
+        () -> {
+            try (Writer writer = new FileWriter(uranium.getCache().getPlayersFile())) {
+                this.uranium.getLogger().info("bruh: " + gson.toJson(this.uranium.cachedPlayers.toArray()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         this.uranium.getCache().SaveCache();
     }
 
