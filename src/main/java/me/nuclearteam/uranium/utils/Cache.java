@@ -29,27 +29,27 @@ public class Cache {
     }
 
     public void LoadCache() {
-        if (bannedPlayersFile.exists()) {
+        if (bannedPlayersFile.exists() && bannedPlayersFile.length() > 0) {
             try (Reader reader = new FileReader(bannedPlayersFile)) {
                 this.uranium235.bannedPlayers.clear();
                 this.uranium235.bannedPlayers.addAll(Arrays.asList(gson.fromJson(reader, BannedPlayer[].class)));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if (bannedIpsFile.exists()) {
+        if (bannedIpsFile.exists() && bannedIpsFile.length() > 0) {
             try (Reader reader = new FileReader(bannedIpsFile)) {
                 this.uranium235.bannedIps.clear();
                 this.uranium235.bannedIps.addAll(Arrays.asList(gson.fromJson(reader, BannedIp[].class)));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if (playersFile.exists()) {
+        if (playersFile.exists() && playersFile.length() > 0) {
             try (Reader reader = new FileReader(playersFile)) {
                 this.uranium235.cachedPlayers.clear();
                 this.uranium235.cachedPlayers.addAll(Arrays.asList(gson.fromJson(reader, CachePlayer[].class)));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -59,39 +59,33 @@ public class Cache {
         return playersFile;
     }
 
-    public void SaveCache() {
-//        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
-//                () -> {
-//                        System.out.println("no... That would be YOUR MOTHER!");
-//                    try (Writer writer = new FileWriter(playersFile)) {
-//                        this.uranium235.getLogger().info("bruh: " + gson.toJson(this.uranium235.cachedPlayers.toArray()));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                });
-//        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
-//                () -> {
-//                    try (Writer writer = new FileWriter(this.bannedPlayersFile)) {
-//                        prettyGson.toJson(this.uranium235.bannedPlayers.toArray(), writer);
-//                    } catch (IOException ex) {
-//                        ex.printStackTrace();
-//                    }
-//                });
-//        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
-//                () -> {
-//                    try (Writer writer = new FileWriter(this.bannedIpsFile)) {
-//                        prettyGson.toJson(this.uranium235.bannedIps.toArray(), writer);
-//                    } catch (IOException ex) {
-//                        ex.printStackTrace();
-//                    }
-//                });
+    // Used generally to clear cache before saving it
+    public void ClearCache() {
         try {
             PrintWriter printWriter = new PrintWriter(this.uranium235.getDataFolder() + "/banned-players.json");
             printWriter.print("");
             printWriter.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (FileNotFoundException ignored) {
+
         }
+        try {
+            PrintWriter printWriter = new PrintWriter(this.uranium235.getDataFolder() + "/banned-ips.json");
+            printWriter.print("");
+            printWriter.close();
+        } catch (FileNotFoundException ignored) {
+
+        }
+        try {
+            PrintWriter printWriter = new PrintWriter(this.uranium235.getDataFolder() + "/players.json");
+            printWriter.print("");
+            printWriter.close();
+        } catch (FileNotFoundException ignored) {
+
+        }
+    }
+
+    public void SaveCache() {
+        ClearCache();
         FileWriter writer = new FileWriter(this.uranium235);
         writer.writeToFileAsync("players.json", gson.toJson(this.uranium235.cachedPlayers.toArray()));
         writer.writeToFileAsync("banned-players.json", gson.toJson(this.uranium235.bannedPlayers.toArray()));
