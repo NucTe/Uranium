@@ -67,5 +67,10 @@
             <version>1.12-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>me.NuclearTeam</groupId>
+            <artifactId>nuclearlib</artifactId>
+            <version>0.1.3</version>
+        </dependency>
     </dependencies>
 </project>

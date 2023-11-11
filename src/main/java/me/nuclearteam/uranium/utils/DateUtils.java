@@ -20,6 +20,7 @@ public class DateUtils {
     }
 
     public static boolean hasExpired(String expiresOn) {
+        if (expiresOn.equalsIgnoreCase("forever")) return false;
         try {
             Date dateOnExpires = dateFormat.parse(expiresOn);
             Date dateNow = Calendar.getInstance().getTime();

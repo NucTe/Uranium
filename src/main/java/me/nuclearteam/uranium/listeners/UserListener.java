@@ -22,20 +22,24 @@ public class UserListener implements Listener {
 
     public UserListener(Uranium uranium) {
         this.uranium = uranium;
+        this.uranium.getLogger().info("UserListener created");
     }
-
-    Gson gson = new Gson();
-    Gson prettyGson = new GsonBuilder().create();
 
     @EventHandler
     public void OnJoin(LoginEvent event) {
+        this.uranium.cache.LoadCache();
+        this.uranium.getLogger().info("meow");
         String name = event.getConnection().getName();
         UUID uuid = event.getConnection().getUniqueId();
         String ip = event.getConnection().getAddress().getAddress().getHostAddress();
 
         this.uranium.bannedPlayers.stream().filter(p -> p.getUuid().equals(uuid)).findAny().ifPresent(p -> {
-            event.setCancelled(true);
-            event.setCancelReason(new TextComponent("You are banned from this server.\nReason: " + p.getReason()));
+            if (!DateUtils.hasExpired(p.getExpirationDate())) {
+                event.setCancelled(true);
+                event.setCancelReason(new TextComponent("You are banned from this server.\nReason: " + p.getReason()));
+            } else {
+                this.uranium.bannedPlayers.removeIf(b -> b.getUuid().equals(uuid));
+            }
         });
 
         this.uranium.bannedIps.stream().filter(p -> p.getIp().equals(ip)).findAny().ifPresent(p -> {
@@ -50,14 +54,6 @@ public class UserListener implements Listener {
             this.uranium.cachedPlayers.add(new CachePlayer(name, uuid, DateUtils.monthLater()));
         }
 
-        this.uranium.getProxy().getScheduler().runAsync(this.uranium,
-        () -> {
-            try (Writer writer = new FileWriter(uranium.getCache().getPlayersFile())) {
-                this.uranium.getLogger().info("bruh: " + gson.toJson(this.uranium.cachedPlayers.toArray()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
         this.uranium.getCache().SaveCache();
     }
 

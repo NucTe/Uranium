@@ -2,6 +2,7 @@ package me.nuclearteam.uranium.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.nuclearteam.nuclearlib.Bungee.FileWriter;
 import me.nuclearteam.uranium.Uranium;
 import me.nuclearteam.uranium.models.BannedIp;
 import me.nuclearteam.uranium.models.BannedPlayer;
@@ -61,29 +62,40 @@ public class Cache {
     public void SaveCache() {
 //        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
 //                () -> {
-                        System.out.println("no... That would be YOUR MOTHER!");
-                    try (Writer writer = new FileWriter(playersFile)) {
-                        this.uranium235.getLogger().info("bruh: " + gson.toJson(this.uranium235.cachedPlayers.toArray()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                        System.out.println("no... That would be YOUR MOTHER!");
+//                    try (Writer writer = new FileWriter(playersFile)) {
+//                        this.uranium235.getLogger().info("bruh: " + gson.toJson(this.uranium235.cachedPlayers.toArray()));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
 //                });
-        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
-                () -> {
-                    try (Writer writer = new FileWriter(this.bannedPlayersFile)) {
-                        prettyGson.toJson(this.uranium235.bannedPlayers.toArray(), writer);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                });
-        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
-                () -> {
-                    try (Writer writer = new FileWriter(this.bannedIpsFile)) {
-                        prettyGson.toJson(this.uranium235.bannedIps.toArray(), writer);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                });
+//        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
+//                () -> {
+//                    try (Writer writer = new FileWriter(this.bannedPlayersFile)) {
+//                        prettyGson.toJson(this.uranium235.bannedPlayers.toArray(), writer);
+//                    } catch (IOException ex) {
+//                        ex.printStackTrace();
+//                    }
+//                });
+//        this.uranium235.getProxy().getScheduler().runAsync(this.uranium235,
+//                () -> {
+//                    try (Writer writer = new FileWriter(this.bannedIpsFile)) {
+//                        prettyGson.toJson(this.uranium235.bannedIps.toArray(), writer);
+//                    } catch (IOException ex) {
+//                        ex.printStackTrace();
+//                    }
+//                });
+        try {
+            PrintWriter printWriter = new PrintWriter(this.uranium235.getDataFolder() + "/banned-players.json");
+            printWriter.print("");
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        FileWriter writer = new FileWriter(this.uranium235);
+        writer.writeToFileAsync("players.json", gson.toJson(this.uranium235.cachedPlayers.toArray()));
+        writer.writeToFileAsync("banned-players.json", gson.toJson(this.uranium235.bannedPlayers.toArray()));
+        writer.writeToFileAsync("banned-ips.json", gson.toJson(this.uranium235.bannedIps.toArray()));
     }
 
 }
